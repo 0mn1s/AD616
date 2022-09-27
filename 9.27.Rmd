@@ -1,0 +1,10 @@
+```{r}
+pacman::p_load("tidyverse","extraDistr")
+```
+
+
+
+```{r}
+library(tidyverse)
+```
+
