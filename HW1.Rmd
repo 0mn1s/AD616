@@ -59,3 +59,60 @@ avg_refund <- sum(unitcost)/sum(unitcost!=0)
 avg_refund
 ```
 
+3a
+
+```{r}
+set.seed(100)
+n <- 100000
+prep <- c(75,100,120,140,160,180)
+mc <- 0.15
+mr <- 2.75
+lic <- 100
+serve <- 0.5
+ep <- rep(0,length(prep))
+fc <- rep(0,length(prep))
+for (i in 1:length(prep)){
+  fc[i] <- prep[i]*serve + lic
+  tp <- rep(rep(0,n),length(prep))
+  demand <- ceiling(rnorm(n, 125,35))
+  for (j in 1:n){
+    if(demand[j]<=prep[i]){
+      
+      tp[i]<- tp[i] + demand[j]*(mr-mc)-fc[i]
+    } else{
+      tp[i]<- tp[i] + prep[i]*(mr-mc)-fc[i]
+    }
+  }
+  ep[i] <- sum(tp)/n
+
+}
+ep
+
+
+```
+
+3b
+```{r}
+set.seed(100)
+n <- 1000
+prep <- 160
+mc <- 0.15
+mr <- 2.75
+lic <- 100
+serve <- 0.5
+fc<- prep*serve + lic
+tp <- rep(0,n)
+demand <- ceiling(rnorm(n, 125,35))
+for (j in 1:n){
+  if(demand[j]<=prep){
+      
+    tp[j]<- demand[j]*(mr-mc)-fc
+  } else{
+     tp[j]<- prep*(mr-mc)-fc
+  }
+}
+
+hist(tp ,include.lowest = TRUE, right = TRUE,xlab = 'total profit')
+```
+
+
