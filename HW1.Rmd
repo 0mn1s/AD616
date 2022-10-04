@@ -1,0 +1,61 @@
+1a
+```{r}
+set.seed(100)
+n <- 100000
+a <- NULL
+b <- NULL
+c <- NULL
+d <- NULL
+e <- NULL
+f <- NULL
+total <- NULL
+
+
+for (i in 1:n){
+  a[i] <- rnorm(1, 200, 20)
+  b[i] <- rnorm(1, 50, 10)
+  c[i] <- rnorm(1, 100, 15)
+  d[i] <- rnorm(1, 150, 30)
+  e[i] <- rnorm(1, 100, 30)
+  f[i] <- rnorm(1, 100, 10)
+  total[i] <- a[i] + b[i] + c[i] + d[i] + e[i] + f[i]
+}
+
+mean(total)
+sd(total)
+```
+1b
+```{r}
+hist(total, xlab = 'total call center demand', main = 'Histogram of total call center demand')
+```
+
+2a
+```{r}
+set.seed(100)
+n <- 100000
+bat_life <- rnorm(n, 7, 2)
+unitcost <- rep(0,n)
+a <- 0
+for (i in 1:n){
+  if(bat_life[i]<=5){
+     a<- 10 + 1.5* floor((5-bat_life[i])/(1/12))
+       unitcost[i] = a
+    
+    }
+  
+}
+avg_cost <- sum(unitcost)/n
+avg_cost
+```
+
+2b
+```{r}
+p <- sum(unitcost!=0)/n 
+p
+```
+2c
+```{r}
+avg_refund <- sum(unitcost)/sum(unitcost!=0)
+avg_refund
+```
+
