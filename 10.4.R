@@ -36,3 +36,21 @@ pvals <-sapply(x=31:40,
 lambda<- 
 
 
+library(e1071)
+library(tidyverse)
+library(ggplot2)
+x <- rdiscrete(2000, probs=c(.25,.50,.24,.01), values=1:4)
+
+a<- rdunif(1000, 200,350)
+b<- rdunif(1000, 200,350)
+c<- rdunif(1000, 350,450)
+d<- rdunif(1000, 450,500)
+y<- case_when(x==1~a,
+              x==2~b,
+              x==3~c,
+              x==4~d)
+
+ggplot()+geom_histogram(mapping=aes(x=y,y=..density..),fill="blue",color="black",
+                   breaks=seq(0,600,25))
+
+mean(y<500)
