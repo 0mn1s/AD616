@@ -1,0 +1,118 @@
+1a
+```{r}
+set.seed(100)
+n <- 100000
+a <- NULL
+b <- NULL
+c <- NULL
+d <- NULL
+e <- NULL
+f <- NULL
+total <- NULL
+
+
+for (i in 1:n){
+  a[i] <- rnorm(1, 200, 20)
+  b[i] <- rnorm(1, 50, 10)
+  c[i] <- rnorm(1, 100, 15)
+  d[i] <- rnorm(1, 150, 30)
+  e[i] <- rnorm(1, 100, 30)
+  f[i] <- rnorm(1, 100, 10)
+  total[i] <- a[i] + b[i] + c[i] + d[i] + e[i] + f[i]
+}
+
+mean(total)
+sd(total)
+```
+1b
+```{r}
+hist(total, xlab = 'total call center demand', main = 'Histogram of total call center demand')
+```
+
+2a
+```{r}
+set.seed(100)
+n <- 100000
+bat_life <- rnorm(n, 7, 2)
+unitcost <- rep(0,n)
+a <- 0
+for (i in 1:n){
+  if(bat_life[i]<=5){
+     a<- 10 + 1.5* floor((5-bat_life[i])/(1/12))
+       unitcost[i] = a
+    
+    }
+  
+}
+avg_cost <- sum(unitcost)/n
+avg_cost
+```
+
+2b
+```{r}
+p <- sum(unitcost!=0)/n 
+p
+```
+2c
+```{r}
+avg_refund <- sum(unitcost)/sum(unitcost!=0)
+avg_refund
+```
+
+3a
+
+```{r}
+set.seed(100)
+n <- 100000
+prep <- c(75,100,120,140,160,180)
+mc <- 0.15
+mr <- 2.75
+lic <- 100
+serve <- 0.5
+ep <- rep(0,length(prep))
+fc <- rep(0,length(prep))
+for (i in 1:length(prep)){
+  fc[i] <- prep[i]*serve + lic
+  tp <- rep(rep(0,n),length(prep))
+  demand <- ceiling(rnorm(n, 125,35))
+  for (j in 1:n){
+    if(demand[j]<=prep[i]){
+      
+      tp[i]<- tp[i] + demand[j]*(mr-mc)-fc[i]
+    } else{
+      tp[i]<- tp[i] + prep[i]*(mr-mc)-fc[i]
+    }
+  }
+  ep[i] <- sum(tp)/n
+
+}
+ep
+
+
+```
+
+3b
+```{r}
+set.seed(100)
+n <- 1000
+prep <- 160
+mc <- 0.15
+mr <- 2.75
+lic <- 100
+serve <- 0.5
+fc<- prep*serve + lic
+tp <- rep(0,n)
+demand <- ceiling(rnorm(n, 125,35))
+for (j in 1:n){
+  if(demand[j]<=prep){
+      
+    tp[j]<- demand[j]*(mr-mc)-fc
+  } else{
+     tp[j]<- prep*(mr-mc)-fc
+  }
+}
+
+hist(tp ,include.lowest = TRUE, right = TRUE,xlab = 'total profit')
+```
+
+
