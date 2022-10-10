@@ -1,22 +1,55 @@
 
 1.a
 ```{r}
+library(ggplot2)
+set.seed(100)
 n1 <- 10000
 n2 <- 100
 x <- matrix(rep(0, n1*n2), n1, n2)
-<<<<<<< HEAD
-x
+for (j in 1:n2){
+  for (i in 1:n1){
+    x[i,j] <- runif(1, 0, 1)
+  }
+}
+sum <- rowSums(x)
+hist(sum)
+
+a <- rnorm(100, 50, 100/12)
+ggplot() + geom_density(aes(x=a), fill = "blue", adjust =2)+
+  ylab("probability density")+
+  xlab("x")+
+  xlim(0, 100)
+
+mean(sum)
+sd(sum)
 ```
 
-=======
 
-```
+
+
 
 1.b
 ```{r}
+set.seed(100)
 n1 <- 10000
 n2 <- 10
 x <- matrix(rep(0, n1*n2), n1, n2)
-apply(x, )
+y <- matrix(rep(0,n1, n1, 1))
+for (i in 1:n1){
+  for (j in 1:n2){
+    x[i,j] <- runif(1, 0, 1)
+    
+  }
+  y[i] <- sort(x[i,])[3]
+}
+hist(y)
+
+a <- rbeta(10,3,8)
+ggplot() + geom_density(aes(x=a), fill = "blue")+
+  ylab("probability density")+
+  xlab("x")+
+  xlim(-.25, 0.5)
+mean(y)
+sd(y)
 ```
->>>>>>> d7c0d4c19a5ab8512e6374e24340319131b32e35
+
