@@ -53,3 +53,36 @@ mean(y)
 sd(y)
 ```
 
+2
+```{r}
+set.seed(100)
+n <- 10000
+time <- rexp(n,10)
+purchase <- rpois(n,10)
+df <- data.frame(time, purchase)
+hist(time)
+hist(purchase)
+```
+
+
+```{r}
+library(tidyverse)
+library(FinancialMath)
+n <- 10000 # number of trials
+mr <- 115 #policy holders are expected to pay monthly
+ny <- 20 # number of years in model
+lump <- 1000000 #, the lumo that the beneficiaries expected to receive If a policy holder in good standing dies during the term of the policy
+cancel <- 0.003 # the rate that the policy holder will let the policy lapse 
+cr <- 0.065 # the cost rate of the funds
+x <- rweibull(n, 4.5, scale = 39)
+model <- rep(NULL, n)
+for (i in 1:n){
+  model[i] <- data.frame(xx = x[i])
+  model[i] <- mutate(model[i],
+                revenue <- 
+    
+  )
+}
+
+```
+
