@@ -54,3 +54,18 @@ ggplot()+geom_histogram(mapping=aes(x=y,y=..density..),fill="blue",color="black"
                    breaks=seq(0,600,25))
 
 mean(y<500)
+
+
+qdp<- function(p,probs,ints)
+  ifelse(p<probs[i],
+         qunif(p/probs[1]),
+         qbp(p-probs[1],probs[-1],ints[-1]))
+
+rdp<- function(n,probs,ints)
+  q<-runif(n)
+  sapply(qdp,q,probs,ints)
+  
+x<- qbp(n=100000,
+        probs=c(.25,.5,.24,.01),
+        ints=c(100,200,350,450,500))
+
