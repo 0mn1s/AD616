@@ -64,7 +64,7 @@ hist(time)
 hist(purchase)
 ```
 
-
+3
 ```{r}
 library(tidyverse)
 library(FinancialMath)
@@ -72,16 +72,21 @@ n <- 10000 # number of trials
 mr <- 115 #policy holders are expected to pay monthly
 ny <- 20 # number of years in model
 lump <- 1000000 #, the lumo that the beneficiaries expected to receive If a policy holder in good standing dies during the term of the policy
-cancel <- 0.003 # the rate that the policy holder will let the policy lapse 
+cancel_rate <- 0.003 # the rate that the policy holder will let the policy lapse 
 cr <- 0.065 # the cost rate of the funds
 x <- rweibull(n, 4.5, scale = 39)
-model <- rep(NULL, n)
-for (i in 1:n){
-  model[i] <- data.frame(xx = x[i])
-  model[i] <- mutate(model[i],
-                revenue <- 
-    
-  )
+m_cancel <- rexp(n, cancel_rate)
+model <- rep(data.frame(), n)
+npv <- rep(NULL, n)
+function(x){
+  for (i in 1:length(x)){
+    year <- ny
+    if(x[i]<ny)
+      year <- x[i]
+    model <- data.frame(1:year)
+    model <- mutate(model, xx <- x[i],
+                 revenue <-    )
+  }
 }
 
 ```
