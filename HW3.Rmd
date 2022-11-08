@@ -44,3 +44,62 @@ for(i in 1:length(nob)){
 # hist(sim[,4], main = paste("Histogram of" , nob[4], "boats"))
 ```
 
+
+#2
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(MultiRNG)
+library(Matrix)
+library(matrixcalc)
+library(fitdistrplus)
+df <- read.csv("Assignment 3 Problem 1 data.csv")
+hist(df$party_size, main = paste("Histogram of party size"))
+
+
+dist_list_1<- c('norm','geom', "pois")
+
+size_list<- lapply(X = dist_list_1,
+                FUN = fitdist,
+                data = df$party_size)
+gofstat(size_list)
+
+df<- df%>%mutate(
+  ps = party_size -13
+)
+nps_list<- lapply(X = dist_list_1,
+                FUN = fitdist,
+                data = df$ps)
+gofstat(nps_list)
+
+nps.f <- fitdist(df$ps, "pois") |>print()
+
+npsdist_list_2<- c('norm','lnorm',"gamma", 'weibull', 'logis', 'cauchy')
+rev_list <- lapply(X = dist_list_2,
+                FUN = fitdist,
+                data = df$rev_per_person)
+gofstat(rev_list)
+
+
+rev.f <- fitdist(df$rev_per_person, "gamma") |>print()
+
+qqcomp( fitdist(df$rev_per_person, "gamma"))
+cdfcomp(fitdist(df$rev_per_person, "gamma"))
+
+cor(df$party_size, df$rev_per_person)
+```
+
+#simulation
+```{r}
+n <- 100000
+party <- rpois(n, 6.84) + 13
+rev <- rgamma(n, 15.9386656, 0.0918413 )
+df <- data.frame(party, rev)%>%mutate(
+  tr = party*rev
+)
+ cat("the mean of the total revenue is ", mean(df$tr), fill = TRUE )
+  cat("the sd of the total revenue is ", sd(df$tr), fill = TRUE )
+  hist(df$tr)
+
+```
+
