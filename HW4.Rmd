@@ -1,3 +1,5 @@
+#1 
+##previous
 ```{r}
 library(EnvStats)
 library(tidyverse)
@@ -5,6 +7,9 @@ library(ggplot2)
 library(e1071)
 set.seed(100)
 
+# nob <- c(4000, 8000, 12000, 15000) #number of boat
+
+mc_sim <- function(nob){
 n <- 1000
 x <- rdiscrete(n, probs=c(.35,.40,.20,.05), values=1:4)
 a <- rdunif(n, 2000,5000)
@@ -19,7 +24,6 @@ demand <- case_when(x==1~a,
 fc <- rnorm(n, 300, 60)
 sales_n <- rep(NA, n)
 sales_r <- rep(NA, n)
-nob <- c(4000, 8000, 12000, 15000) #number of boat
 sim <- matrix(NA, n,length(nob) )
 for(i in 1:length(nob)){
   tc <- fc + sum(rtri(nob[i], 77000, 100000, 90000))
@@ -32,16 +36,32 @@ for(i in 1:length(nob)){
   for(k in 1:n){
     sim[k, i] <- tr[k]
   }
- 
 }
-
-for(i in 1:length(nob)){
- cat("the mean of the total profit of selling ",nob[i],"boats is ", mean(sim[,i]), fill = TRUE )
-  cat("the sd of the total profit of selling ",nob[i],"boats is ", sd(sim[,i]), fill = TRUE )
-  hist(sim[,i], main = paste("Histogram of" , nob[i], "boats"))
+colnames(sim)<- nob
+return(sim)
 }
+# for(i in 1:length(nob)){
+#  cat("the mean of the total profit of selling ",nob[i],"boats is ", mean(sim[,i]), fill = TRUE )
+#   cat("the sd of the total profit of selling ",nob[i],"boats is ", sd(sim[,i]), fill = TRUE )
+#   hist(sim[,i], main = paste("Histogram of" , nob[i], "boats"))
+# }
 # hist(sim[,1], main = paste("Histogram of" , nob[1], "boats"))
 # hist(sim[,2], main = paste("Histogram of" , nob[2], "boats"))
 # hist(sim[,3], main = paste("Histogram of" , nob[3], "boats"))
 # hist(sim[,4], main = paste("Histogram of" , nob[4], "boats"))
+
+
+
 ```
+##a
+```{r}
+# mc_sim <- c(m = mean(df.profit), quantile(df$profit))}
+
+x <- sapply(seq(2000, 15000, 1000), mc_sim) %>% t() %>%
+  cbind(qty = seq(2000, 15000, 1000) ,)%>% as.data.frame()
+
+x <- sapply(seq(2000, 15000, 1000), mc_sim) 
+
+ggplot(x) +geom_ribbon(ase(x = qty, ymin = 0%, ymax = 100%), alpha = .4)
+```
+
