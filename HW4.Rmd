@@ -53,15 +53,124 @@ return(sim)
 
 
 ```
-##a
+
 ```{r}
-# mc_sim <- c(m = mean(df.profit), quantile(df$profit))}
+library(EnvStats)
+library(tidyverse)
+library(ggplot2)
+library(e1071)
+set.seed(100)
 
-x <- sapply(seq(2000, 15000, 1000), mc_sim) %>% t() %>%
-  cbind(qty = seq(2000, 15000, 1000) ,)%>% as.data.frame()
+# nob <- c(4000, 8000, 12000, 15000) #number of boat
 
-x <- sapply(seq(2000, 15000, 1000), mc_sim) 
+mc_sim <- function(nob){
+n <- 1000
+x <- rdiscrete(n, probs=c(.35,.40,.20,.05), values=1:4)
+a <- rdunif(n, 2000,5000)
+b <- rdunif(n, 5001,10000)
+c <- rdunif(n, 10001,14000)
+d <- rdunif(n, 14001,15000)
+demand <- case_when(x==1~a,
+              x==2~b,
+              x==3~c,
+              x==4~d)
 
-ggplot(x) +geom_ribbon(ase(x = qty, ymin = 0%, ymax = 100%), alpha = .4)
+fc <- rnorm(n, 300, 60)
+sales_n <- rep(NA, n)
+sales_r <- rep(NA, n)
+sim <- rep(NA, n)
+
+  tc <- fc + sum(rtri(nob, 77000, 100000, 90000))
+  for (j in 1:n) {
+    sales_n[j] <- min(demand[j], nob)
+    sales_r[j] <- nob - sales_n[j]
+    sim[j] <- sales_n[j]*150000 + sales_r[j]*7000 - tc
+
+  }
+  
+  # sim <- sales_n*150000 + sales_r*7000 - tc
+  # for(k in 1:n){
+  #   sim[k] <- tr[k]
+
+
+return(c(m = mean(sim), lower = quantile(sim, c(.025, .1)), upper = quantile(sim, c(.9, .975))))
+}
+# for(i in 1:length(nob)){
+#  cat("the mean of the total profit of selling ",nob[i],"boats is ", mean(sim[,i]), fill = TRUE )
+#   cat("the sd of the total profit of selling ",nob[i],"boats is ", sd(sim[,i]), fill = TRUE )
+#   hist(sim[,i], main = paste("Histogram of" , nob[i], "boats"))
+# }
+# hist(sim[,1], main = paste("Histogram of" , nob[1], "boats"))
+# hist(sim[,2], main = paste("Histogram of" , nob[2], "boats"))
+# hist(sim[,3], main = paste("Histogram of" , nob[3], "boats"))
+# hist(sim[,4], main = paste("Histogram of" , nob[4], "boats"))
+
+
+
 ```
 
+##a
+```{r}
+# mc_sim <- c(m = mean(df.profit), quantile(df$profit, .8, .95))
+
+x <- sapply(seq(2000, 15000, 1000), mc_sim) %>% t() %>%
+  cbind(qty = seq(2000, 15000, 1000))%>% as.data.frame()
+
+
+ggplot(x) +geom_ribbon(aes(x = qty, ymin = '80%', ymax = '95%'), alpha = .4)
+```
+
+#2
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(DEoptim)
+set.seed(100)
+n <- 10000
+liq <- 100000000
+a <- 85000000
+b <- liq - a
+inv_a <- a
+inv_b <- b
+
+qlnorm2 <- function(p, mean, sd){
+  qlnorm(p, log(mean*(1 + sd^2 /mean^2)^(-.5)),log(1 + sd^2 / mean^2)^.5)
+}
+
+rlnorm2 <- function(n, mean, sd){
+  qlnorm2(runif(n), mean, sd)
+}
+
+rev_a <- rlnorm2(n,mean = 2*a,sd = 3*a)
+rev_b <- rlnorm2(n,mean = 1.6*b,sd = 2*b)
+cert <- liq*0.08
+tr <- pmax(((rev_a + rev_b + cert) - liq), 0)*(1 - 0.15)
+df <- data.frame(inv_a, inv_b, rev_a, rev_b)%>%
+  round()%>%
+  mutate(tr = pmax(((rev_a + rev_b + cert) - liq),0)*(1 - 0.15))
+mean(df$tr)
+#cor(df$rev_a, df$rev_b, method = 'spearman')
+```
+
+```{r}
+# optimize
+set.seed(100)
+opt <- function(a){
+df <- data.frame(rev_a <- rlnorm2(n,mean = 2*a,sd = 3*a),
+                 rev_b <- rlnorm2(n,mean = 1.6*(100000000 - a),sd = 2*(100000000 - a)))%>%round()%>%
+      mutate(tr = pmax(((rev_a + rev_b + cert) - liq),0)*(1 - 0.15))
+return(mean(df$tr))
+}
+optimise(opt, interval = c(50000000,100000000), maximum = T)
+```
+
+```{r}
+
+df2<- df %>%
+  summarise(q.025=quantile(tr,.025),
+            q.125=quantile(tr,.125),
+            q.875=quantile(tr,.875),
+            q.975=quantile(tr,.975),
+            m=mean(tr))
+df2
+```
